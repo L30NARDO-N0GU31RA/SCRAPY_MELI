@@ -98,12 +98,3 @@ class ScrapyAnunciosMeli:
         self.title = self.extract_text('#header > div > div.ui-pdp-header__title-container > h1')
         self.return_dict['retorno']['title'] = self.title if self.title else 'Elemento não encontrado.'
 
-instance = ScrapyAnunciosMeli('https://produto.mercadolivre.com.br/MLB-1376105143-jogo-de-panelas-antiaderente-cereja-8-pcs-c-tampa-de-vidro-_JM#polycard_client=recommendations_vip-pads&reco_backend=vip-pads-star-plus-odin_marketplace&reco_client=vip-pads&reco_item_pos=1&reco_backend_type=low_level&reco_id=39eb45b2-1a9c-4874-a052-77dbf1ae6abb&is_advertising=true&ad_domain=VIPCORE_RECOMMENDED&ad_position=2&ad_click_id=NzJiNDBmYTgtYjkwZS00YzViLTkwODktYWFmMWFiZWZmOTk3')
-
-instance.get_price()
-instance.get_reputacao()
-instance.get_seller()
-instance.get_view_more()
-instance.get_variacoes()
-instance.get_title()
-print(instance.return_dict)
