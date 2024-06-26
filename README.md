@@ -55,8 +55,3 @@ scrapy-anuncios-meli/
 ├── tasks.py                    # Script principal
 ├── exemplo_de_uso.py           # Script para testes
 └── README.md                   # Este arquivo
-
-
-## Contribuições
-
-Se você quiser contribuir para este projeto, sinta-se à vontade para fazer um fork do repositório e enviar um pull request com suas melhorias. Todas as contribuições são bem-vindas!
