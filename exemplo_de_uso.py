@@ -1,7 +1,7 @@
-from tasks import ScrapyAnunciosMeli
+from tasks import ScrapyAnunciosMeli, ScrapyAccountMeli
 
 
-sua_url_anuncio_mercado_livre = 'https://produto.mercadolivre.com.br/MLB-2815611908-kit-6-camisetas-masculinas-lisa-basica-100-algodo-premium-_JM#is_advertising=true&position=12&search_layout=grid&type=pad&tracking_id=5d1de472-a58d-437f-837b-a21b68d3953a&is_advertising=true&ad_domain=VQCATCORE_LST&ad_position=12&ad_click_id=ZjdhOTNlMDEtOTE1Ni00ZjEyLWJlNTItMTg5NGU0NTY2ODQz'
+sua_url_anuncio_mercado_livre = 'https://produto.mercadolivre.com.br/MLB-4107271844-conjunto-panelas-antiaderente-10-pecas-teflon-varias-cores-_JM#position=5&search_layout=grid&type=item&tracking_id=3023dbd0-633b-4617-8f17-ea4e88476ff7'
 instance = ScrapyAnunciosMeli(sua_url_anuncio_mercado_livre)
 
 instance.get_price()
@@ -10,4 +10,15 @@ instance.get_seller()
 instance.get_view_more()
 instance.get_variacoes()
 instance.get_title()
-print(instance.return_dict)
+instance.get_img()
+instance.get_estoque()
+dictt = instance.return_dict
+print (dictt)
+if dictt['retorno']['view_more']:
+    instance = ScrapyAccountMeli(dictt['retorno']['view_more'])
+    filters = instance.get_filters()
+
+if filters:
+    for i in filters:
+        print(i)
+
