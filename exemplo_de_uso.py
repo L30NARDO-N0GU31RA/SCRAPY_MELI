@@ -20,5 +20,8 @@ if dictt['retorno']['view_more']:
 
 if filters:
     for i in filters:
-        print(i)
+        print(f'{i['title']}:')
+        for b in i['subfilters']:
+            print(f' - {b['name']} {b['quantity']}')
+        print('\n')
 

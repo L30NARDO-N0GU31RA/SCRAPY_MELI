@@ -196,7 +196,6 @@ class ScrapyAccountMeli:
                 )
                 if element_view_more:
                     link = element_view_more.get('href')
-                    print(link)
                     response = self.session.get(link, headers=self.headers)
                     if response.status_code == 200:
                         self.soup = BeautifulSoup(response.content, 'html.parser')
@@ -242,8 +241,6 @@ class ScrapyAccountMeli:
             '#root-app > div > div.ui-search-main.ui-search-main--without-header.ui-search-main--only-products > aside > section.ui-search-filter-groups > div.ui-search-filter-dl'
         )
 
-        print(f"Number of filter groups found: {len(filter_groups)}")
-
         filters_data = []
 
         if filter_groups:
@@ -252,7 +249,6 @@ class ScrapyAccountMeli:
 
                 if title:
                     filter_title = title.text.strip()
-                    print(f"Filter group title: {filter_title}")
 
                     subfilters = group.select('ul > li.ui-search-filter-container > a')
 
@@ -278,4 +274,3 @@ class ScrapyAccountMeli:
 
     def apply_filter(self):
         pass
-    
