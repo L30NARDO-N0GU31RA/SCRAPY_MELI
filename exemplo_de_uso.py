@@ -1,7 +1,7 @@
 from tasks import ScrapyAnunciosMeli, ScrapyAccountMeli
 
 
-sua_url_anuncio_mercado_livre = 'https://produto.mercadolivre.com.br/MLB-1598467627-jogo-de-panelas-5-pcs-antiaderente-tampa-de-vidro-_JM?searchVariation=variationID#polycard_client=recommendations_home_navigation-recommendations&reco_backend=machinalis-homes-univb-equivalent-offer&reco_client=home_navigation-recommendations&reco_item_pos=4&reco_backend_type=function&reco_id=fae5ced5-6571-464c-ac8e-267c5c9e57e6&c_id=/home/navigation-recommendations/element&c_uid=52f9233d-e5f2-4c7d-b04d-0b3cd42aaff2'
+sua_url_anuncio_mercado_livre = 'https://produto.mercadolivre.com.br/MLB-4107271844-conjunto-panelas-antiaderente-10-pecas-teflon-varias-cores-_JM?searchVariation=variationID#polycard_client=recommendations_home_navigation-recommendations&reco_backend=machinalis-homes-univb-equivalent-offer&reco_client=home_navigation-recommendations&reco_item_pos=1&reco_backend_type=function&reco_id=3b546e2d-462f-4ddf-89ed-57e900e8a45b&c_id=/home/navigation-recommendations/element&c_uid=50262b28-57c0-4266-9ab7-5db2466fcca5'
 instance = ScrapyAnunciosMeli(sua_url_anuncio_mercado_livre)
 
 instance.get_price()
@@ -19,9 +19,14 @@ if dictt['retorno']['view_more']:
     filters = instance.get_filters()
 
 if filters:
-    for i in filters:
-        print(f'{i['title']}:')
-        for b in i['subfilters']:
-            print(f' - {b['name']} {b['quantity']}')
-        print('\n')
-
+    for index, value in enumerate(filters, start=1):
+        print(f'{index}. {value['title']}')
+    filtro = int(input('Digite o número correspondente ao filtro'))
+    filtro = filters[filtro-1]
+    for index, value in enumerate(filtro['subfilters'], start=1):
+        print(f'{index}. {value['name']} {value['quantity']}')
+    filtro_cat = int(input('Digite o número correspondente ao filtro'))
+    filtro = filtro['subfilters'][filtro_cat-1]
+    instance.filter = filtro
+    instance.apply_filter()
+    instance.get_anuncios()

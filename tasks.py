@@ -153,6 +153,7 @@ class ScrapyAccountMeli:
         self.driver: Optional[webdriver.Chrome] = None
         self.url = url
         self.soup: Optional[BeautifulSoup] = None
+        self.filter: Optional[str] = False
         self.return_dict: Dict[str, Dict[str, Optional[str]]] = {'status': '200', 'retorno': {}}
         self.filter_dict: Dict[str, Optional[str]] = {}
 
@@ -160,10 +161,6 @@ class ScrapyAccountMeli:
         self.headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
         }
-
-        # Iniciar a thread do Selenium
-        tread_driver = threading.Thread(target=self.thread_selenium)
-        tread_driver.start()
 
         # Executar a função principal
         self.get_account()
@@ -200,6 +197,9 @@ class ScrapyAccountMeli:
                     if response.status_code == 200:
                         self.soup = BeautifulSoup(response.content, 'html.parser')
                 else:
+                    # Iniciar a thread do Selenium
+                    tread_driver = threading.Thread(target=self.thread_selenium)
+                    tread_driver.start()
                     self.handle_view_more()
 
             else:
@@ -254,13 +254,15 @@ class ScrapyAccountMeli:
 
                     subfilter_data = []
                     for subfilter in subfilters:
+                        href = subfilter.get('href')
                         subfilter_name = subfilter.select_one('span.ui-search-filter-name')
                         subfilter_qty = subfilter.select_one('span.ui-search-filter-results-qty')
 
                         if subfilter_name and subfilter_qty:
                             subfilter_data.append({
                                 'name': subfilter_name.text.strip(),
-                                'quantity': subfilter_qty.text.strip()
+                                'quantity': subfilter_qty.text.strip(),
+                                'href': href
                             })
 
                     filters_data.append({
@@ -273,4 +275,34 @@ class ScrapyAccountMeli:
         return filters_data
 
     def apply_filter(self):
-        pass
+        if self.filter:
+            response = self.session.get(self.filter['href'])
+            if response.status_code == 200:
+                self.soup = BeautifulSoup(response.content, 'html.parser')
+
+    def get_anuncios(self):
+        # Seleciona todos os elementos li dentro da lista de anúncios
+        anuncios = self.soup.select('#root-app > div > div.ui-search-main.ui-search-main--without-header.ui-search-main--only-products > section > ol > li')
+        
+        # Itera sobre cada anúncio encontrado
+        for anuncio in anuncios:
+            # Seleciona o elemento 'a' dentro de cada 'li' para obter o link ou título do anúncio
+            titulo_anuncio = anuncio.select_one('div.ui-search-result__content > div > div.ui-search-item__group.ui-search-item__group--title > a')
+            preco_anuncio = anuncio.select_one('div.ui-search-result__content > div > div.ui-search-item__group.ui-search-item__group--price.ui-search-item__group--price-grid-container > div')
+            avaliacao_anuncio = anuncio.select_one('div.ui-search-result__content > div > div.ui-search-item__group.ui-search-item__group--title > div > span.ui-search-reviews__rating-number')
+            carrossel = anuncio.select_one('div.ui-search-result__image section.andes-carousel-snapped__container')
+
+            # Verifica se o carrossel foi encontrado
+            if carrossel:
+                # Seleciona a primeira imagem ativa dentro do carrossel
+                img_principal = carrossel.select_one('div.andes-carousel-snapped__slide.andes-carousel-snapped__slide--active img')
+
+                # Verifica se a imagem principal foi encontrada
+                if img_principal:
+                    link_img_anuncio = img_principal.get('src')
+                    print(link_img_anuncio)
+            # Verifica se o título do anúncio foi encontrado
+            if titulo_anuncio:
+                print(titulo_anuncio.text.strip(), preco_anuncio.text.strip(), avaliacao_anuncio.text.strip())  # Imprime o texto do título do anúncio sem espaços extras
+            else:
+                print("Título do anúncio não encontrado")
